@@ -1,0 +1,129 @@
+#*
+ * Copyright 2003-2004 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * $Id: VM_global_library.vm,v 1.10 2011/05/03 07:37:49 sosimisy Exp $
+ *#
+
+## Display all queued Struts errors
+#macro (errorMarkup)
+    #if ($errors.exist() )
+        <ul>
+        #foreach ($e in $errors.all )
+            $e
+        #end
+        </ul>
+    #end
+#end
+
+## Display all queued Struts errors for a particular property
+#macro (errorMarkupForProperty $property)
+    #if ($errors.exist($property) )
+        <ul>
+        #foreach ($er in $errors.get($property))
+            $er
+        #end
+        </ul>
+    #end
+#end
+
+## Display all queued Struts errors
+#macro (messageMarkup)
+    #if ($messages.exist() )
+        <ul>
+        #foreach ($m in $messages.all )
+            $m
+        #end
+        </ul>
+    #end
+#end
+
+## Display all queued Struts action messages for a particular property
+#macro (messageMarkupForProperty $property)
+    #if ($messages.exist($property) )
+        <ul>
+        #foreach ($m in $messages.get($property))
+            $m
+        #end
+        </ul>
+    #end
+#end
+
+#macro( springFormCheckboxesCutnum $path $options $separator $attributes $cutnum)
+    #springBind($path)
+    #foreach($option in $options.entrySet())
+			#set($tmp_chk = "")
+      #foreach($item in $status.value) 
+          #if("$item" == "${option.key}")
+						#set($tmp_chk = "checked='checked'")
+					#end 
+      #end
+      <input type="checkbox" name="${status.expression}" id="${status.expression}_${velocityCount}" value="${option.key}" ${attributes} $tmp_chk /> 
+			<label for="${status.expression}_${velocityCount}">${option.value}</label>${separator}
+			#if("$!cutnum" != "" && "$cutnum" != "0")
+				#set($na = $velocityCount%$cutnum)
+				#if($na == 0)	<br/> #end
+			#end
+    #end
+    <input type="hidden" name="_${status.expression}" value="on"/>
+#end
+
+#macro( mrSpringFormCheckboxes $path $options $separator $attributes )
+    #springBind($path)
+    #foreach($option in $options.keySet())
+			<input type="checkbox" name="${status.expression}" id="${status.expression}_${velocityCount}" value="${option}" 
+	        #foreach($item in $status.value) 
+	            #if($item == $option) checked="checked" #end 
+	        #end
+	        ${attributes} >
+					
+			<label for="${status.expression}_${velocityCount}">${options.get($option)}</label> ${separator}
+    #end
+    <input type="hidden" name="_${status.expression}" value="on"/>
+#end
+
+#macro( mrSpringFormHiddenCheckboxes $path $options $separator $attributes $separator2)
+    #springBind($path)
+    #foreach($option in $options.keySet())
+			${separator}<input type="checkbox" name="${status.expression}" id="${status.expression}_${velocityCount}" value="${option}" 
+	        #foreach($item in $status.value) 
+	            #if($item == $option) checked="checked" #end 
+	        #end
+	        ${attributes} >
+					
+			<label for="${status.expression}_${velocityCount}"></label> ${separator2}
+    #end
+    <input type="hidden" name="_${status.expression}" value="on"/>
+#end
+
+
+#macro( mrSpringFormRadioButtons $path $options $separator $attributes )
+    #springBind($path)
+    #foreach($option in $options.keySet())
+			<input type="radio" name="${status.expression}" value="${option}" id="${status.expression}_${velocityCount}" #if("$!status.value" == "$option") checked="checked" #end  ${attributes} >
+			<label for="${status.expression}_${velocityCount}">${options.get($option)}</label> ${separator}
+    #end
+#end
+
+#macro( mrSpringFormSingleSelect $path $options $attributes $title)
+    #springBind($path)
+		<select id="${status.expression}" name="${status.expression}" $!{attributes} >
+			#if("$!title" != "")
+	      <option value="" #if("$!status.value" == "") seletcted="selected" #end >$!title</option>
+			#end
+	    #foreach($option in $options.keySet())
+	    	<option value="$!{option}" #if("$status.value" == "$option") selected="selected" #end >$!{options.get($option)}</option>
+	    #end
+		</select>
+#end
